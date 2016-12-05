@@ -32,39 +32,62 @@
     // How do I immediately update info upon selection of season?
       // Event listener that listens for an input from that
 
-  // Other
-    // What should execute right when documents load?
-    // Do I have to wait until both documents have loaded before I execute?
-      // Have a boolean that becomes true when both objects are loaded
-      // While loop that runs and listens for that boolean
+// variables for JSON objects
+var productsJSON;
+var categoriesJSON;
 
-    // Other option: wait for one document to load
-    // THEN load the other document and run your function that needs both documents
+// My XML requests and function calls create a chain reaction
+// that ensures both json files are loaded before HTML is generated
 
+// Step 3
+function generateHTML(loadEvt) {
+  categoriesJSON = JSON.parse(loadEvt.target.responseText)
+  var tableEl = document.getElementById('products-table')
+  tableEl.innerHTML = generateTable(productsJSON, categoriesJSON)
 
+}
+
+// Step 2
 function parseProducts(loadEvt) {
-  jsonObject = loadEvt.target.responseText
-  data = JSON.parse(jsonObject)
-  console.log(data.products)
-  // console.log(data.products[0])
-  // console.log(data.products[0].name)
+  productsJSON = JSON.parse(loadEvt.target.responseText)
+  var categoriesRequest = new XMLHttpRequest()
+  categoriesRequest.addEventListener("load", generateHTML)
+  categoriesRequest.open("GET", "categories.json")
+  categoriesRequest.send()
 }
 
-function parseCategories(loadEvt) {
-  jsonObject = loadEvt.target.responseText
-  data = JSON.parse(jsonObject)
-  console.log(data.categories)
-}
-
+// Step 1
 var productsRequest = new XMLHttpRequest()
 productsRequest.addEventListener("load", parseProducts)
 productsRequest.open("GET", "products.json")
 productsRequest.send()
 
-var categoriesRequest = new XMLHttpRequest()
-categoriesRequest.addEventListener("load", parseCategories)
-categoriesRequest.open("GET", "categories.json")
-categoriesRequest.send()
+
+function generateTable(prod, cat) {
+  // Accepts productsJSON and categoriesJSON
+  // Generates HTML for table rows
+  var htmlString = ""
+
+  for(var i = 0; i < prod.products.length; i++) {
+    htmlString += `<tr>
+                    <td>${prod.products[i].name}</td>
+                    <td>${whatCategory(prod.products[i].category_id, cat)}</td>
+                    <td>$${prod.products[i].price}</td>
+                  </tr>`
+  }
+  return htmlString
+}
+
+function whatCategory(num, cat) {
+  for(var i = 0; i < cat.categories.length; i++) {
+    if(cat.categories[i].id === num) {
+      return cat.categories[i].name
+    }
+  }
+}
+
+
+
 
 
 
