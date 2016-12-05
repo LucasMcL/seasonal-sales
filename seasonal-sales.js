@@ -88,6 +88,7 @@ function whatCategory(num, cat) {
 
 // Function to apply discount based on selected season
 // Executes on change of <select> element
+// Resets all prices to their original values first
 function applyDiscount() {
   resetPrices();
   discount = getDiscountInfo().discount
