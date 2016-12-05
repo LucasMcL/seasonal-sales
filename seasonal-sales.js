@@ -32,6 +32,21 @@
     // How do I immediately update info upon selection of season?
       // Event listener that listens for an input from that
 
+function parseProducts(loadEvt) {
+  jsonObject = loadEvt.target.responseText
+  data = JSON.parse(jsonObject)
+  console.log(data)
+  console.log(data.products)
+  console.log(data.products[0])
+  console.log(data.products[0].name)
+}
+
+var productsRequest = new XMLHttpRequest()
+productsRequest.addEventListener("load", parseProducts)
+productsRequest.open("GET", "products.json")
+productsRequest.send();
+
+
 
 
 
