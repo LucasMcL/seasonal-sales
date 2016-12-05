@@ -77,6 +77,7 @@ function generateTable(prod, cat) {
   return htmlString
 }
 
+// Gets Department info from ID in products JSON object
 function whatCategory(num, cat) {
   for(var i = 0; i < cat.categories.length; i++) {
     if(cat.categories[i].id === num) {
@@ -88,31 +89,48 @@ function whatCategory(num, cat) {
 // Function to apply discount based on selected season
 // Executes on change of <select> element
 function applyDiscount() {
-  discount = whatDiscount(categoriesJSON)
-  priceElements = document.getElementsByClassName("price");
+  resetPrices();
+  discount = getDiscountInfo().discount
+  dept = getDiscountInfo().dept_name
+  priceElements = document.getElementsByClassName("price")
+  deptElements = document.getElementsByClassName("department")
   n = priceElements.length
   for(var i = 0; i < n; i++) {
-    var price = priceElements[i].innerHTML
-    // Removes dollar sign
-    price = Number(price.replace(/[^0-9\.]+/g,""));
-    price = price - (price * discount)
-    price = price.toFixed(2)
-    priceElements[i].innerHTML = "$" + price
+    if(dept === deptElements[i].innerHTML) {
+      var price = priceElements[i].innerHTML
+      // Removes dollar sign
+      price = Number(price.replace(/[^0-9\.]+/g,""));
+      price = price - (price * discount)
+      price = price.toFixed(2) // Round to 2 places
+      priceElements[i].innerHTML = "$" + price
+    }
   }
 }
 
-// Function to return percent discount
-// Grabs season from input element
-// Takes categories JSON file as argument
-function whatDiscount(cat) {
+// Function to return percent discount and dept name to apply to
+// Returns object with keys:
+  // dept_name
+  // discount
+function getDiscountInfo() {
+  cat = categoriesJSON
   seasEl = document.getElementById("select-season")
   seas = seasEl.value;
   for(var i = 0; i < cat.categories.length; i++) {
     if(cat.categories[i].season_discount === seas) {
-      return cat.categories[i].discount
+      return {dept_name: cat.categories[i].name,
+              discount: cat.categories[i].discount}
     }
   }
   return 0;
+}
+
+// Function to reset price values on table
+function resetPrices() {
+  var priceElements = document.getElementsByClassName("price")
+  var n = priceElements.length
+  for (var i = 0; i < n; i++) {
+    priceElements[i].innerHTML = "$" + productsJSON.products[i].price
+  }
 }
 
 seasEl = document.getElementById("select-season")
