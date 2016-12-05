@@ -32,21 +32,39 @@
     // How do I immediately update info upon selection of season?
       // Event listener that listens for an input from that
 
+  // Other
+    // What should execute right when documents load?
+    // Do I have to wait until both documents have loaded before I execute?
+      // Have a boolean that becomes true when both objects are loaded
+      // While loop that runs and listens for that boolean
+
+    // Other option: wait for one document to load
+    // THEN load the other document and run your function that needs both documents
+
+
 function parseProducts(loadEvt) {
   jsonObject = loadEvt.target.responseText
   data = JSON.parse(jsonObject)
-  console.log(data)
   console.log(data.products)
-  console.log(data.products[0])
-  console.log(data.products[0].name)
+  // console.log(data.products[0])
+  // console.log(data.products[0].name)
+}
+
+function parseCategories(loadEvt) {
+  jsonObject = loadEvt.target.responseText
+  data = JSON.parse(jsonObject)
+  console.log(data.categories)
 }
 
 var productsRequest = new XMLHttpRequest()
 productsRequest.addEventListener("load", parseProducts)
 productsRequest.open("GET", "products.json")
-productsRequest.send();
+productsRequest.send()
 
-
+var categoriesRequest = new XMLHttpRequest()
+categoriesRequest.addEventListener("load", parseCategories)
+categoriesRequest.open("GET", "categories.json")
+categoriesRequest.send()
 
 
 
