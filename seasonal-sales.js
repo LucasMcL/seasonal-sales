@@ -44,7 +44,6 @@ function generateHTML(loadEvt) {
   categoriesJSON = JSON.parse(loadEvt.target.responseText)
   var tableEl = document.getElementById('products-table')
   tableEl.innerHTML = generateTable(productsJSON, categoriesJSON)
-
 }
 
 // Step 2
@@ -70,9 +69,9 @@ function generateTable(prod, cat) {
 
   for(var i = 0; i < prod.products.length; i++) {
     htmlString += `<tr>
-                    <td>${prod.products[i].name}</td>
-                    <td>${whatCategory(prod.products[i].category_id, cat)}</td>
-                    <td>$${prod.products[i].price}</td>
+                    <td class="prod-name">${prod.products[i].name}</td>
+                    <td class="department">${whatCategory(prod.products[i].category_id, cat)}</td>
+                    <td class="price">$${prod.products[i].price}</td>
                   </tr>`
   }
   return htmlString
@@ -86,8 +85,38 @@ function whatCategory(num, cat) {
   }
 }
 
+// Function to apply discount based on selected season
+// Executes on change of <select> element
+function applyDiscount() {
+  discount = whatDiscount(categoriesJSON)
+  priceElements = document.getElementsByClassName("price");
+  n = priceElements.length
+  for(var i = 0; i < n; i++) {
+    var price = priceElements[i].innerHTML
+    // Removes dollar sign
+    price = Number(price.replace(/[^0-9\.]+/g,""));
+    price = price - (price * discount)
+    price = price.toFixed(2)
+    priceElements[i].innerHTML = "$" + price
+  }
+}
 
+// Function to return percent discount
+// Grabs season from input element
+// Takes categories JSON file as argument
+function whatDiscount(cat) {
+  seasEl = document.getElementById("select-season")
+  seas = seasEl.value;
+  for(var i = 0; i < cat.categories.length; i++) {
+    if(cat.categories[i].season_discount === seas) {
+      return cat.categories[i].discount
+    }
+  }
+  return 0;
+}
 
+seasEl = document.getElementById("select-season")
+seasEl.addEventListener("change", applyDiscount)
 
 
 
