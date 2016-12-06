@@ -33,14 +33,14 @@ function parseProducts(loadEvt) {
   productsJSON = JSON.parse(loadEvt.target.responseText)
   var categoriesRequest = new XMLHttpRequest()
   categoriesRequest.addEventListener("load", generateHTML)
-  categoriesRequest.open("GET", "categories.json")
+  categoriesRequest.open("GET", "https://seasonal-sales-lucasmcl.firebaseio.com/categories.json")
   categoriesRequest.send()
 }
 
 // Step 1
 var productsRequest = new XMLHttpRequest()
 productsRequest.addEventListener("load", parseProducts)
-productsRequest.open("GET", "products.json")
+productsRequest.open("GET", "https://seasonal-sales-lucasmcl.firebaseio.com/products.json")
 productsRequest.send()
 
 
